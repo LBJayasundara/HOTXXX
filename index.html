@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy 26th Birthday, Yashod!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #d9ecff;
+      --bg-2: #b8dbff;
+      --ink: #143252;
+      --accent: #167ad1;
+      --accent-soft: #4da9f4;
+      --card: rgba(255, 255, 255, 0.82);
+      --glow: rgba(77, 169, 244, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Outfit", sans-serif;
+      color: var(--ink);
+        background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.75) 0%, transparent 32%),
+          radial-gradient(circle at 88% 15%, rgba(136, 195, 255, 0.4) 0%, transparent 30%),
+                  linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      overflow: hidden;
+      padding: 1rem;
+    }
+
+    .shape {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(1px);
+      z-index: 0;
+      animation: float 11s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .shape.one {
+      width: 180px;
+      height: 180px;
+      left: -40px;
+      top: 12%;
+      background: rgba(57, 148, 255, 0.3);
+    }
+
+    .shape.two {
+      width: 230px;
+      height: 230px;
+      right: -70px;
+      bottom: 10%;
+      background: rgba(43, 114, 235, 0.24);
+      animation-delay: -3s;
+    }
+
+    .shape.three {
+      width: 130px;
+      height: 130px;
+      right: 18%;
+      top: -35px;
+      background: rgba(86, 188, 255, 0.3);
+      animation-delay: -6s;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(780px, 96vw);
+      padding: clamp(1.4rem, 3vw, 2.2rem);
+      border-radius: 28px;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      box-shadow: 0 20px 60px rgba(25, 78, 132, 0.2);
+      backdrop-filter: blur(6px);
+      animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .hidden-content {
+      opacity: 0;
+      transform: translateY(10px) scale(0.99);
+      pointer-events: none;
+    }
+
+    .visible-content {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .intro-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 6;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      background: linear-gradient(145deg, rgba(20, 60, 100, 0.42), rgba(31, 107, 185, 0.36));
+      backdrop-filter: blur(4px);
+    }
+
+    .intro-card {
+      width: min(540px, 95vw);
+      border-radius: 24px;
+      padding: 1.4rem;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 18px 50px rgba(20, 73, 125, 0.25);
+      text-align: center;
+      animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .intro-title {
+      font-family: "Playfair Display", serif;
+      color: #0f3559;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      margin-bottom: 0.5rem;
+    }
+
+    .intro-text {
+      color: #2b5a87;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .open-card-btn {
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      color: #fff;
+      font-weight: 700;
+      font-family: "Outfit", sans-serif;
+      font-size: 0.95rem;
+      padding: 0.62rem 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 10px 22px var(--glow);
+    }
+
+    .open-card-btn:disabled {
+      opacity: 0.75;
+      cursor: progress;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .photo-strip {
+      margin: 0.5rem 0 0.8rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.85rem;
+    }
+
+    .photo {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 3px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 14px 32px rgba(23, 76, 133, 0.22);
+      max-width: 340px;
+      justify-self: center;
+    }
+
+    .photo img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
+    .photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.14), transparent 40%);
+      pointer-events: none;
+    }
+
+    .photo:hover img {
+      transform: scale(1.07);
+    }
+
+    .balloon {
+      position: fixed;
+      bottom: -140px;
+      width: 44px;
+      height: 58px;
+      border-radius: 50% 50% 46% 46%;
+      z-index: 0;
+      opacity: 0.72;
+      animation: flyUp linear infinite;
+      pointer-events: none;
+    }
+
+    .balloon::before {
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 70px;
+      background: rgba(165, 214, 255, 0.5);
+      left: 21px;
+      top: 56px;
+    }
+
+    .balloon.b1 {
+      left: 8%;
+      background: #2ea0ff;
+      animation-duration: 11s;
+    }
+
+    .balloon.b2 {
+      left: 28%;
+      background: #6ec8ff;
+      animation-duration: 14s;
+      animation-delay: -2.6s;
+      width: 38px;
+      height: 52px;
+    }
+
+    .balloon.b3 {
+      left: 76%;
+      background: #3d89ff;
+      animation-duration: 12.8s;
+      animation-delay: -4.2s;
+    }
+
+    .balloon.b4 {
+      left: 90%;
+      background: #4bc2ff;
+      animation-duration: 16s;
+      animation-delay: -6.4s;
+      width: 34px;
+      height: 50px;
+    }
+
+    .confetti-wrap {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      top: -12px;
+      width: 8px;
+      height: 14px;
+      opacity: 0.9;
+      animation: confettiFall linear infinite;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 1rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      letter-spacing: 0.03em;
+      color: #fff;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      box-shadow: 0 8px 24px var(--glow);
+    }
+
+    h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(1.9rem, 5vw, 3.4rem);
+      line-height: 1.05;
+      margin-bottom: 0.9rem;
+    }
+
+    h1 span {
+      color: var(--accent);
+      text-shadow: 0 4px 12px rgba(46, 160, 255, 0.34);
+    }
+
+    .message {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      line-height: 1.7;
+      max-width: 64ch;
+    }
+
+    .footer-note {
+      margin-top: 1.2rem;
+      font-weight: 600;
+      color: #2f5f8d;
+    }
+
+    .reveal-item {
+      opacity: 0;
+      transform: translateY(16px) scale(0.985);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .reveal-item.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #cbe7ff, #4bc2ff);
+      box-shadow: 0 0 16px rgba(110, 200, 255, 0.7);
+      animation: twinkle 2.6s infinite;
+    }
+
+    .s1 { top: 14px; right: 22px; }
+    .s2 { top: 50px; right: 55px; animation-delay: -0.6s; }
+    .s3 { bottom: 18px; left: 24px; animation-delay: -1.2s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-18px); }
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { transform: scale(0.85); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    @keyframes photoIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.96) rotate(-1deg);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes flyUp {
+      from {
+        transform: translateY(0) translateX(0) rotate(0deg);
+      }
+      to {
+        transform: translateY(-130vh) translateX(16px) rotate(8deg);
+      }
+    }
+
+    @keyframes confettiFall {
+      from {
+        transform: translateY(0) rotate(0deg);
+      }
+      to {
+        transform: translateY(112vh) rotate(540deg);
+      }
+    }
+
+    @media (max-width: 560px) {
+      body {
+        overflow: auto;
+      }
+
+      .card {
+        border-radius: 22px;
+      }
+
+      .message {
+        line-height: 1.55;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .photo {
+        max-width: 100%;
+      }
+
+      .photo img {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="birthdaySong" loop preload="auto" playsinline>
+    <source src="saavane-happy-birthday-254480.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div id="introGate" class="intro-gate" aria-live="polite">
+    <section class="intro-card" aria-label="Open birthday card">
+      <h2 class="intro-title">Hello Bawantha</h2>
+      <p id="introText" class="intro-text">Special message from Lahiru. Tap below to open.</p>
+      <button id="openCardBtn" class="open-card-btn" type="button">Open</button>
+    </section>
+  </div>
+
+  <div class="confetti-wrap" id="confettiWrap" aria-hidden="true"></div>
+
+  <div class="shape one"></div>
+  <div class="shape two"></div>
+  <div class="shape three"></div>
+  <div class="balloon b1" aria-hidden="true"></div>
+  <div class="balloon b2" aria-hidden="true"></div>
+  <div class="balloon b3" aria-hidden="true"></div>
+  <div class="balloon b4" aria-hidden="true"></div>
+
+  <main id="birthdayContent" class="card hidden-content" role="main" aria-label="Birthday wish card">
+    <div class="sparkle s1" aria-hidden="true"></div>
+    <div class="sparkle s2" aria-hidden="true"></div>
+    <div class="sparkle s3" aria-hidden="true"></div>
+
+    <p class="badge reveal-item">Celebrating 26 Years</p>
+    <h1 class="reveal-item">Happy Birthday, <span>Yashod Bawantha</span>!</h1>
+    <section class="hero-grid" aria-label="Birthday hero section">
+      <div>
+        <p class="message reveal-item">
+          Wishing you a fantastic 26th birthday filled with joy, laughter, and unforgettable moments.
+          May this new year of your life bring you success, good health, and everything your heart hopes for.
+          Keep shining and chasing your dreams.
+        </p>
+      </div>
+      <section class="photo-strip" aria-label="Birthday photo">
+        <figure class="photo reveal-item">
+          <img src="WhatsApp Image 2026-03-27 at 10.24.55.jpeg" alt="Birthday memory photo" />
+        </figure>
+      </section>
+    </section>
+    <p class="footer-note reveal-item">Have an amazing day and a brilliant year ahead!</p>
+  </main>
+
+  <script>
+    const song = document.getElementById("birthdaySong");
+    const introGate = document.getElementById("introGate");
+    const openCardBtn = document.getElementById("openCardBtn");
+    const introText = document.getElementById("introText");
+    const birthdayContent = document.getElementById("birthdayContent");
+    const revealItems = Array.from(document.querySelectorAll(".reveal-item"));
+
+    song.volume = 1;
+
+    const openCardExperience = async () => {
+      openCardBtn.disabled = true;
+      introText.textContent = "Opening your surprise...";
+      openCardBtn.textContent = "Opening";
+
+      try {
+        await song.play();
+      } catch {
+        // If playback fails, keep trying quietly after open.
+        const retry = setInterval(async () => {
+          try {
+            await song.play();
+            clearInterval(retry);
+          } catch {
+            // Continue retrying.
+          }
+        }, 1000);
+      }
+
+      setTimeout(() => {
+        introGate.style.display = "none";
+        birthdayContent.classList.remove("hidden-content");
+        birthdayContent.classList.add("visible-content");
+
+        revealItems.forEach((item, index) => {
+          setTimeout(() => {
+            item.classList.add("show");
+          }, 170 * index);
+        });
+      }, 650);
+    };
+
+    openCardBtn.addEventListener("click", openCardExperience, { once: true });
+
+    const confettiWrap = document.getElementById("confettiWrap");
+    const colors = ["#2ea0ff", "#6ec8ff", "#3d89ff", "#4bc2ff", "#87ddff", "#6ba8ff"];
+
+    for (let i = 0; i < 42; i += 1) {
+      const piece = document.createElement("span");
+      piece.className = "confetti";
+      piece.style.left = `${Math.random() * 100}%`;
+      piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDuration = `${5 + Math.random() * 6}s`;
+      piece.style.animationDelay = `${Math.random() * 5 - 5}s`;
+      piece.style.transform = `scale(${0.6 + Math.random()})`;
+      confettiWrap.appendChild(piece);
+    }
+  </script>
+</body>
+</html>
